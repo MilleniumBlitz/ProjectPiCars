@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">ProjectPiCars</string>
+    <string name="action_about">About ProjectPiCars</string>
+    <string name="action_settings">Settings</string>
+    <string name="btn_add">Add</string>
+    <string name="btn_del_description">Delete a connection</string>
+    <string name="btn_go_description">To connect</string>
+    <string name="edit_text_ip">Enter the IP address</string>
+    <string name="logo">Logo</string>
+    <string name="no_connections">No saved connections</string>
+    <string name="btn_edit">Edit</string>
+    <string name="action_save">Save</string>
+</resources>

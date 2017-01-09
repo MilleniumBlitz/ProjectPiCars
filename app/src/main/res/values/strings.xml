@@ -1,0 +1,26 @@
+<resources>
+    <!--Application-->
+    <string name="app_name">ProjectPiCars</string>
+
+    <!--Splash-->
+    <string name="logo">Logo</string>
+
+    <!--Activity Main-->
+    <string name="action_settings">Paramètres</string>
+    <string name="action_about">À propos</string>
+    <string name="btn_add">Ajouter</string>
+    <string name="btn_del_description">Supprimer une connexion</string>
+    <string name="btn_go_description">Se connecter</string>
+    <string name="edit_text_ip">Entrez une adresse IP</string>
+    <string name="no_connections">Aucune connexion enregistrée</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="btn_edit">Editer</string>
+    <string name="edit_text_joystick_power">Joystick Power</string>
+    <string name="edit_text_joystick_direction">Joystick Direction</string>
+    <string name="fr.millenium_blitz.projectpicars.preferences_file">PreferencesFile</string>
+    <string name="saved_joystick_power">100</string>
+    <string name="saved_joystick_direction">100</string>
+    <string name="action_save">Sauvegarder</string>
+
+
+</resources>
