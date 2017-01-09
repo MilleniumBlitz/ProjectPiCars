@@ -252,10 +252,8 @@ public class JoystickPowerView extends View implements Runnable {
         return direction;
     }
 
-    public void setOnJoystickMoveListener(OnJoystickMoveListener listener,
-                                          long repeatInterval) {
+    public void setOnJoystickMoveListener(OnJoystickMoveListener listener) {
         this.onJoystickMoveListener = listener;
-        this.loopInterval = repeatInterval;
     }
 
     public interface OnJoystickMoveListener {

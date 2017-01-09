@@ -16,7 +16,7 @@ public class Connexion implements Serializable{
         this.id = pId;
     }
 
-    public void setAdresse(String pAdresse) {
+    void setAdresse(String pAdresse) {
         this.adresse = pAdresse;
     }
 

@@ -9,9 +9,6 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by xavier on 26/12/2015.
- */
 public class ConnexionDAO {
 
     // Database fields
@@ -54,7 +51,7 @@ public class ConnexionDAO {
     }
 
     public List<Connexion> getAllConnexions() {
-        List<Connexion> connexions = new ArrayList<Connexion>();
+        List<Connexion> connexions = new ArrayList<>();
 
         Cursor cursor = database.query(MySQLiteHelper.TABLE_CONNEXIONS,
                 allColumns, null, null, null, null, null);

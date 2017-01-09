@@ -129,7 +129,7 @@ public class JoystickActivity extends Activity {
 
                 queue.add(stringRequest);
             }
-        }, JoystickPowerView.DEFAULT_LOOP_INTERVAL);
+        });
 
         joystickDirectionView.setOnJoystickMoveListener(new JoystickDirectionView.OnJoystickMoveListener() {
 
@@ -164,6 +164,6 @@ public class JoystickActivity extends Activity {
 
                 queue.add(stringRequest);
             }
-        }, JoystickDirectionView.DEFAULT_LOOP_INTERVAL);
+        });
     }
 }
