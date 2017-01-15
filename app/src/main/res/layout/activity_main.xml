@@ -16,6 +16,8 @@
 
     </android.support.design.widget.AppBarLayout>
 
+
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
@@ -51,20 +53,15 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <com.beardedhen.androidbootstrap.BootstrapButton
-                android:id="@+id/btnAdd"
-                android:text="@string/btn_add"
+            <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
-                app:bootstrapBrand="info"
-                app:bootstrapSize="lg"
-                app:buttonMode="regular"
-                app:showOutline="false"
-                app:roundedCorners="true"
-                android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true" />
-
+                android:id="@+id/btnAdd"
+                android:text="@string/btn_add"
+                android:layout_alignBottom="@+id/input_layout_add_connection"
+                android:layout_alignParentEnd="true"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:textColor="@android:color/white" />
 
         </RelativeLayout>
 
@@ -106,19 +103,6 @@
                 app:roundedCorners="true"
                 android:layout_marginEnd="5dp" />
 
-            <com.beardedhen.androidbootstrap.BootstrapButton
-                android:id="@+id/btnGo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/btn_go_description"
-                app:fontAwesomeIcon="fa_chevron_right"
-                app:bootstrapBrand="info"
-                app:bootstrapSize="lg"
-                app:buttonMode="regular"
-                app:showOutline="true"
-                app:roundedCorners="true"
-                />
-
         </LinearLayout>
 
         <LinearLayout
@@ -133,13 +117,23 @@
 
 
             <Button
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/btnTest"
-                android:layout_weight="1"
                 android:text="test mode" />
+
         </LinearLayout>
 
     </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btnGo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:src="@drawable/ic_flash_on_black_24dp"
+        android:tint="@android:color/white"
+        android:layout_margin="16dp"
+        app:layout_anchorGravity="bottom|right|end" />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -2,6 +2,7 @@ package fr.millenium_blitz.projectpicars.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -39,8 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private ConnexionDAO datasource;
     private View parentLayout;
 
-    @BindView(R.id.btnGo) BootstrapButton btnGo;
-    @BindView(R.id.btnAdd) BootstrapButton btnAdd;
+    @BindView(R.id.btnGo) FloatingActionButton btnGo;
+    @BindView(R.id.btnAdd) Button btnAdd;
     @BindView(R.id.btnDel) BootstrapButton btnDel;
 
     @BindView(R.id.btnTest) Button btnTest;
