@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -42,6 +43,8 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.btnAdd) BootstrapButton btnAdd;
     @BindView(R.id.btnDel) BootstrapButton btnDel;
 
+    @BindView(R.id.btnTest) Button btnTest;
+
     @BindView(R.id.spinnerConnections) Spinner spinner;
     @BindView(R.id.lblConnections) TextView lblConnexions;
     @BindView(R.id.editTextIP) EditText txtIpAjout;
@@ -53,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
         TypefaceProvider.registerDefaultIconSets();
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-
 
         parentLayout = findViewById(android.R.id.content);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -156,6 +158,14 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Snackbar.make(parentLayout, "Veuillez rentrer une adresse valide", Snackbar.LENGTH_SHORT).show();
         }
+    }
+
+    @OnClick(R.id.btnTest)
+    public void testMode()
+    {
+        Intent intent = new Intent(getApplicationContext(), JoystickActivity.class);
+        intent.putExtra("IP", "");
+        startActivity(intent);
     }
 
 

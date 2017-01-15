@@ -12,65 +12,42 @@ import android.view.View;
 
 import fr.millenium_blitz.projectpicars.R;
 
-public class JoystickDirectionView extends View implements Runnable {
+public class JoystickView extends View implements Runnable {
 
-    // Constants
-    private final double RAD = 57.2957795;
     public final static long DEFAULT_LOOP_INTERVAL = 100; // 100 ms
 
     // Variables
     private OnJoystickMoveListener onJoystickMoveListener; // Listener
     private Thread thread = new Thread(this);
-    private long loopInterval = DEFAULT_LOOP_INTERVAL;
     private int xPosition = 0; // Touch x position
     private int yPosition = 0; // Touch y position
     private double centerX = 0; // Center view x position
     private double centerY = 0; // Center view y position
-    private Paint mainCircle;
     private Paint button;
-    private Paint horizontalLine;
-    private Paint verticalLine;
     private int joystickRadius;
     private int buttonRadius;
     private int lastAngle = 0;
-    private int lastPower = 0;
 
-    public JoystickDirectionView(Context context) {
+    public JoystickView(Context context) {
         super(context);
     }
 
-    public JoystickDirectionView(Context context, AttributeSet attrs) {
+    public JoystickView(Context context, AttributeSet attrs) {
         super(context, attrs);
         initJoystickView();
     }
 
-    public JoystickDirectionView(Context context, AttributeSet attrs, int defaultStyle) {
+    public JoystickView(Context context, AttributeSet attrs, int defaultStyle) {
         super(context, attrs, defaultStyle);
         initJoystickView();
     }
 
     protected void initJoystickView() {
 
-        mainCircle = new Paint(Paint.ANTI_ALIAS_FLAG);
-        mainCircle.setColor(ContextCompat.getColor(getContext(), R.color.gris_transparent));
-        mainCircle.setStyle(Paint.Style.FILL_AND_STROKE);
-
-        verticalLine = new Paint();
-        verticalLine.setStrokeWidth(2);
-        verticalLine.setColor(Color.BLACK);
-
-        horizontalLine = new Paint();
-        horizontalLine.setStrokeWidth(2);
-        horizontalLine.setColor(Color.BLACK);
-
         button = new Paint(Paint.ANTI_ALIAS_FLAG);
         button.setColor(Color.BLACK);
         button.setStyle(Paint.Style.STROKE);
         button.setStrokeWidth(6);
-
-        verticalLine = new Paint();
-        verticalLine.setStrokeWidth(5);
-        verticalLine.setColor(Color.RED);
     }
 
     @Override
@@ -113,48 +90,21 @@ public class JoystickDirectionView extends View implements Runnable {
         return result;
     }
 
+
+
     @Override
     protected void onDraw(Canvas canvas) {
+
         centerX = (getWidth()) / 2;
         centerY = (getHeight()) / 2;
 
-        Paint triangleGauchePaint = new Paint();
-        triangleGauchePaint.setStrokeWidth(10);
-        triangleGauchePaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        triangleGauchePaint.setColor(Color.GRAY);
-        Path triangleGauchePath = new Path();
-        triangleGauchePath.moveTo((float) (centerX - joystickRadius / 2), (float) centerY);
-        triangleGauchePath.lineTo((float) (centerX - joystickRadius / 2), (float) centerY + 30);
-        triangleGauchePath.lineTo((float) (centerX - joystickRadius + 60), (float) centerY);
-        triangleGauchePath.lineTo((float) (centerX - joystickRadius / 2), (float) centerY - 30);
-        triangleGauchePath.lineTo((float) (centerX - joystickRadius / 2), (float) centerY);
-        triangleGauchePath.close();
-        canvas.drawPath(triangleGauchePath, triangleGauchePaint);
-
-        Paint triangleDroitPaint = new Paint();
-        triangleDroitPaint.setStrokeWidth(10);
-        triangleDroitPaint.setStyle(Paint.Style.FILL_AND_STROKE);
-        triangleDroitPaint.setColor(Color.GRAY);
-        Path triangleDroitPath = new Path();
-        triangleDroitPath.moveTo((float) (centerX + joystickRadius / 2), (float) centerY);
-        triangleDroitPath.lineTo((float) (centerX + joystickRadius / 2), (float) centerY + 30);
-        triangleDroitPath.lineTo((float) (centerX + joystickRadius - 60), (float) centerY);
-        triangleDroitPath.lineTo((float) (centerX + joystickRadius / 2), (float) centerY - 30);
-        triangleDroitPath.lineTo((float) (centerX + joystickRadius / 2), (float) centerY);
-        triangleDroitPath.close();
-        canvas.drawPath(triangleDroitPath, triangleDroitPaint);
-
-        // painting the main circle
-        canvas.drawCircle((int) centerX, (int) centerY, joystickRadius,
-                mainCircle);
-
         // painting the move button
         canvas.drawCircle(xPosition, yPosition, buttonRadius, button);
+
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-
         xPosition = (int) event.getX();
         yPosition = (int) event.getY();
         double abs = Math.sqrt((xPosition - centerX) * (xPosition - centerX)
@@ -187,6 +137,7 @@ public class JoystickDirectionView extends View implements Runnable {
     }
 
     private int getAngle() {
+        double RAD = 57.2957795;
         if (xPosition > centerX) {
             if (yPosition < centerY) {
                 return lastAngle = (int) (Math.atan((yPosition - centerY)
@@ -229,7 +180,7 @@ public class JoystickDirectionView extends View implements Runnable {
     }
 
     private int getDirection() {
-        if (lastPower == 0 && lastAngle == 0) {
+        if (lastAngle == 0) {
             return 0;
         }
         int a = 0;
@@ -270,7 +221,7 @@ public class JoystickDirectionView extends View implements Runnable {
                 }
             });
             try {
-                Thread.sleep(loopInterval);
+                Thread.sleep(DEFAULT_LOOP_INTERVAL);
             } catch (InterruptedException e) {
                 break;
             }

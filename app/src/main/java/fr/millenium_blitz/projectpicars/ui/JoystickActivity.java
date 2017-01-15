@@ -2,10 +2,14 @@ package fr.millenium_blitz.projectpicars.ui;
 
 import android.app.Activity;
 import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -20,8 +24,7 @@ import com.beardedhen.androidbootstrap.TypefaceProvider;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import fr.millenium_blitz.projectpicars.R;
-import fr.millenium_blitz.projectpicars.view.JoystickDirectionView;
-import fr.millenium_blitz.projectpicars.view.JoystickPowerView;
+import fr.millenium_blitz.projectpicars.view.JoystickView;
 
 public class JoystickActivity extends Activity {
 
@@ -29,8 +32,8 @@ public class JoystickActivity extends Activity {
     @BindView(R.id.btnDebug) BootstrapButton btnDebug;
     @BindView(R.id.btnRefresh) BootstrapButton btnRefresh;
 
-    @BindView(R.id.joystickPuissance) JoystickPowerView joystickPowerView;
-    @BindView(R.id.joystickDirection) JoystickDirectionView joystickDirectionView;
+    @BindView(R.id.joystickPuissance) JoystickView joystickPowerView;
+    @BindView(R.id.joystickDirection) JoystickView joystickDirectionView;
 
     private RequestQueue queue;
     private String ip;
@@ -50,120 +53,125 @@ public class JoystickActivity extends Activity {
         Bundle extras = getIntent().getExtras();
         String IPADRESS = extras.getString("IP");
 
-        ip = "http://" + IPADRESS + "/";
+        if (!"".equals(IPADRESS))
+        {
+            ip = "http://" + IPADRESS + "/";
 
-        Point size = new Point();
-        this.getWindowManager().getDefaultDisplay().getSize(size);
-        int width = size.x;
-        int height = size.y;
+            Point size = new Point();
+            this.getWindowManager().getDefaultDisplay().getSize(size);
+            int width = size.x;
+            int height = size.y;
 
 
-        webView.setVerticalScrollBarEnabled(false);
-        webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
-        htmlWebcam = "<body style='margin:0;padding:0;'><img src=\"http:" + IPADRESS + ":8081/?action=stream\"  height='" + height + "' width='" + width + "'></body></html>";
-        webView.loadData(htmlWebcam, "text/html", null);
+            webView.setVerticalScrollBarEnabled(false);
+            webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+            htmlWebcam = "<body style='margin:0;padding:0;'><img src=\"http:" + IPADRESS + ":8081/?action=stream\"  height='" + height + "' width='" + width + "'></body></html>";
+            webView.loadData(htmlWebcam, "text/html", null);
 
-        queue = Volley.newRequestQueue(getApplicationContext());
+            queue = Volley.newRequestQueue(getApplicationContext());
 
-        btnRefresh.setVisibility(View.GONE);
+            btnRefresh.setVisibility(View.GONE);
 
-        btnDebug.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            btnDebug.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                if (!debugMode) {
-                    debugMode = true;
-                    btnRefresh.setVisibility(View.VISIBLE);
-                    btnDebug.setText("Webcam");
-                    webView.loadUrl(ip);
-                    Log.e(ip, "");
-                    joystickPowerView.setVisibility(View.GONE);
-                    joystickDirectionView.setVisibility(View.GONE);
-                } else {
-                    debugMode = false;
-                    btnRefresh.setVisibility(View.GONE);
-                    btnDebug.setText("Debug");
-                    webView.loadData(htmlWebcam, "text/html", null);
-                    joystickPowerView.setVisibility(View.VISIBLE);
-                    joystickDirectionView.setVisibility(View.VISIBLE);
+                    if (!debugMode) {
+                        debugMode = true;
+                        btnRefresh.setVisibility(View.VISIBLE);
+                        btnDebug.setText("Webcam");
+                        webView.loadUrl(ip);
+                        Log.e(ip, "");
+                        joystickPowerView.setVisibility(View.GONE);
+                        joystickDirectionView.setVisibility(View.GONE);
+                    } else {
+                        debugMode = false;
+                        btnRefresh.setVisibility(View.GONE);
+                        btnDebug.setText("Debug");
+                        webView.loadData(htmlWebcam, "text/html", null);
+                        joystickPowerView.setVisibility(View.VISIBLE);
+                        joystickDirectionView.setVisibility(View.VISIBLE);
+                    }
                 }
-            }
-        });
+            });
 
-        btnRefresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                webView.reload();
-            }
-        });
-
-        joystickPowerView.setOnJoystickMoveListener(new JoystickPowerView.OnJoystickMoveListener() {
-
-            @Override
-            public void onValueChanged(int angle, int power, int direction) {
-
-                String url;
-                if (direction > 4) {
-                    url = ip + "power/-" + power;
-                } else {
-                    url = ip + "power/" + power;
+            btnRefresh.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    webView.reload();
                 }
+            });
+
+            joystickPowerView.setOnJoystickMoveListener(new JoystickView.OnJoystickMoveListener() {
+
+                @Override
+                public void onValueChanged(int angle, int power, int direction) {
+
+                    String url;
+                    if (direction > 4) {
+                        url = ip + "power/-" + power;
+                    } else {
+                        url = ip + "power/" + power;
+                    }
 
 
-                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                    StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
 
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                if (address != null)
-                                    address.cancel();
-                                address = Toast.makeText(getBaseContext(), "Le serveur ne répond pas", Toast.LENGTH_SHORT);
-                                address.show();
-                            }
-                        });
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    if (address != null)
+                                        address.cancel();
+                                    address = Toast.makeText(getBaseContext(), "Le serveur ne répond pas", Toast.LENGTH_SHORT);
+                                    address.show();
+                                }
+                            });
 
-                queue.add(stringRequest);
-            }
-        });
-
-        joystickDirectionView.setOnJoystickMoveListener(new JoystickDirectionView.OnJoystickMoveListener() {
-
-            @Override
-            public void onValueChanged(int angle, int power, int direction) {
-                String url;
-
-                if (angle > 0) {
-                    url = ip + "direction/Droite";
-                } else if (angle < 0) {
-                    url = ip + "direction/Gauche";
-                } else {
-                    url = ip + "direction/Aucune";
+                    queue.add(stringRequest);
                 }
+            });
 
-                StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+            joystickDirectionView.setOnJoystickMoveListener(new JoystickView.OnJoystickMoveListener() {
 
-                        new Response.Listener<String>() {
-                            @Override
-                            public void onResponse(String response) {
-                            }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                if (address != null)
-                                    address.cancel();
-                                address = Toast.makeText(getBaseContext(), "Le serveur ne répond pas", Toast.LENGTH_SHORT);
-                                address.show();
-                            }
-                        });
+                @Override
+                public void onValueChanged(int angle, int power, int direction) {
+                    String url;
 
-                queue.add(stringRequest);
-            }
-        });
+                    if (angle > 0) {
+                        url = ip + "direction/Droite";
+                    } else if (angle < 0) {
+                        url = ip + "direction/Gauche";
+                    } else {
+                        url = ip + "direction/Aucune";
+                    }
+
+                    StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    if (address != null)
+                                        address.cancel();
+                                    address = Toast.makeText(getBaseContext(), "Le serveur ne répond pas", Toast.LENGTH_SHORT);
+                                    address.show();
+                                }
+                            });
+
+                    queue.add(stringRequest);
+                }
+            });
+        }
+
+
     }
 }
