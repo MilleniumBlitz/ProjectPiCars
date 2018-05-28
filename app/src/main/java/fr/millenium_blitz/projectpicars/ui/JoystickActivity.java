@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -21,6 +22,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import fr.millenium_blitz.projectpicars.R;
 import fr.millenium_blitz.projectpicars.view.JoystickView;
+
+import static android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
+import static android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE;
+import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 
 public class JoystickActivity extends Activity {
 
@@ -43,7 +49,9 @@ public class JoystickActivity extends Activity {
         super.onCreate(savedInstanceState);
         TypefaceProvider.registerDefaultIconSets();
         setContentView(R.layout.activity_joystick);
+
         ButterKnife.bind(this);
+        getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY | SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
         final String htmlWebcam;
         Bundle extras = getIntent().getExtras();
