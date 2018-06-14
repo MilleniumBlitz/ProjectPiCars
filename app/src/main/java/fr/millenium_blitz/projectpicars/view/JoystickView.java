@@ -100,6 +100,11 @@ public class JoystickView extends View implements Runnable {
     }
 
     @Override
+    public boolean performClick() {
+        return super.performClick();
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         xPosition = (int) event.getX();
         yPosition = (int) event.getY();
@@ -182,7 +187,7 @@ public class JoystickView extends View implements Runnable {
         int a = 0;
         if (lastAngle <= 0) {
             a = (lastAngle * -1) + 90;
-        } else if (lastAngle > 0) {
+        } else {
             if (lastAngle <= 90) {
                 a = 90 - lastAngle;
             } else {
