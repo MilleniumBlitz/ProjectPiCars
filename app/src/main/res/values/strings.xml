@@ -22,5 +22,9 @@
     <string name="saved_joystick_direction">100</string>
     <string name="action_save">Sauvegarder</string>
 
+    <string name="title_activity_info">InfoActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
 
 </resources>

@@ -1,81 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="10dp"
     tools:context="fr.millenium_blitz.projectpicars.ui.JoystickActivity">
 
     <WebView
+        android:id="@+id/webView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/webView"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
-
-    <fr.millenium_blitz.projectpicars.view.JoystickView
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/joystickPuissance"
-        android:clickable="false"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:background="@drawable/joystick_power"/>
-
-    <fr.millenium_blitz.projectpicars.view.JoystickView
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/joystickDirection"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
-        android:background="@drawable/joystick_direction"/>
+        android:layout_alignParentBottom="true"
+        android:visibility="invisible">
+
+    </WebView>
+
+    <fr.millenium_blitz.projectpicars.view.JoystickView
+        android:id="@+id/joystickPuissance"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/joystick_power"
+        android:clickable="false" />
+
+    <fr.millenium_blitz.projectpicars.view.JoystickView
+        android:id="@+id/joystickDirection"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@drawable/joystick_direction" />
 
     <com.beardedhen.androidbootstrap.BootstrapButton
+        android:id="@+id/btnDebug"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/btnDebug"
         android:layout_alignParentStart="false"
         android:layout_alignParentTop="false"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="2dp"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentBottom="false"
         app:bootstrapBrand="primary"
         app:bootstrapSize="lg"
-        app:buttonMode="regular"
-        app:showOutline="false"
-        app:roundedCorners="true"
         app:bootstrapText="Debug"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentBottom="false" />
+        app:buttonMode="regular"
+        app:roundedCorners="true"
+        app:showOutline="false" />
 
-    <com.beardedhen.androidbootstrap.BootstrapButton
+    <TextView
+        android:id="@+id/txtBattery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="2dp"
-        android:layout_marginTop="2dp"
-        android:id="@+id/btnRefresh"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/btnDebug"
+        android:layout_alignParentEnd="true"
+        android:text="TextView"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="invisible" />
 
-        app:bootstrapBrand="success"
-        app:bootstrapSize="lg"
-        app:buttonMode="regular"
-        app:showOutline="false"
-        app:roundedCorners="true"
-        app:bootstrapText="Rafraichir"
-        />
-
-    <!--<Button-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Debug"-->
-        <!--android:id="@+id/btnDebug"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:layout_alignParentStart="true" />-->
 
 </RelativeLayout>

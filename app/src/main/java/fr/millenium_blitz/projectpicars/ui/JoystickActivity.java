@@ -3,9 +3,10 @@ package fr.millenium_blitz.projectpicars.ui;
 import android.app.Activity;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.webkit.WebView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -28,111 +29,96 @@ import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 
 public class JoystickActivity extends Activity {
 
-    @BindView(R.id.webView) WebView webView;
-    @BindView(R.id.btnDebug) BootstrapButton btnDebug;
-    @BindView(R.id.btnRefresh) BootstrapButton btnRefresh;
+    @BindView(R.id.webView)
+    WebView webView;
+    @BindView(R.id.btnDebug)
+    BootstrapButton btnDebug;
 
-    @BindView(R.id.joystickPuissance) JoystickView joystickPowerView;
-    @BindView(R.id.joystickDirection) JoystickView joystickDirectionView;
+    @BindView(R.id.joystickPuissance)
+    JoystickView joystickPowerView;
+    @BindView(R.id.joystickDirection)
+    JoystickView joystickDirectionView;
+
+    @BindView(R.id.txtBattery)
+    TextView txtBattery;
 
     private RequestQueue queue;
-    private String ip;
-    private static Toast address;
+    private String ipAddress;
+    private static Toast toast;
 
     private boolean debugMode = false;
+    private CountDownTimer timer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        //Init
         super.onCreate(savedInstanceState);
         TypefaceProvider.registerDefaultIconSets();
         setContentView(R.layout.activity_joystick);
-
         ButterKnife.bind(this);
         getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY | SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
-        final String htmlWebcam;
+        //Toggle debug mode
+        btnDebug.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                debugMode = !debugMode;
+                if (debugMode) {
+                    txtBattery.setVisibility(View.VISIBLE);
+                } else {
+                    txtBattery.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+
+        //Get select ipAddress toast
         Bundle extras = getIntent().getExtras();
-        if (extras != null)
-        {
-            String IPADRESS = extras.getString("IP");
+        if (extras != null) {
+            ipAddress = extras.getString("IP");
 
-            if (!"".equals(IPADRESS))
-            {
-                ip = "http://" + IPADRESS + "/";
+            if (!"".equals(ipAddress)) {
 
-                Point size = new Point();
-                this.getWindowManager().getDefaultDisplay().getSize(size);
-                int width = size.x;
-                int height = size.y;
+                webviewInit();
 
+                timer = new CountDownTimer(360000, 2000) {
 
-                webView.setVerticalScrollBarEnabled(false);
-                webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
-                htmlWebcam = "<body style='margin:0;padding:0;'><img src=\"http:" + IPADRESS + ":8081/?action=stream\"  height='" + height + "' width='" + width + "'></body></html>";
-                webView.loadData(htmlWebcam, "text/html", null);
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        getBatteryVoltage();
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        timer.start();
+
+                    }
+                }.start();
+
 
                 queue = Volley.newRequestQueue(getApplicationContext());
-
-                btnRefresh.setVisibility(View.GONE);
-
-                btnDebug.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        if (!debugMode) {
-                            debugMode = true;
-                            btnRefresh.setVisibility(View.VISIBLE);
-                            btnDebug.setText("Webcam");
-                            webView.loadUrl(ip);
-                            Log.e(ip, "");
-                            joystickPowerView.setVisibility(View.GONE);
-                            joystickDirectionView.setVisibility(View.GONE);
-                        } else {
-                            debugMode = false;
-                            btnRefresh.setVisibility(View.GONE);
-                            btnDebug.setText("Debug");
-                            webView.loadData(htmlWebcam, "text/html", null);
-                            joystickPowerView.setVisibility(View.VISIBLE);
-                            joystickDirectionView.setVisibility(View.VISIBLE);
-                        }
-                    }
-                });
-
-                btnRefresh.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        webView.reload();
-                    }
-                });
 
                 joystickPowerView.setOnJoystickMoveListener(new JoystickView.OnJoystickMoveListener() {
 
                     @Override
                     public void onValueChanged(int angle, int power, int direction) {
 
-                        String url;
+                        String request = "http://" + ipAddress + "/";
                         if (direction > 4) {
-                            url = ip + "power/-" + power;
+                            request += "power/-" + power;
                         } else {
-                            url = ip + "power/" + power;
+                            request += "power/" + power;
                         }
 
-
-                        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-
-                                new Response.Listener<String>() {
-                                    @Override
-                                    public void onResponse(String response) {
-                                    }
-                                },
+                        StringRequest stringRequest = new StringRequest(Request.Method.GET, request, null,
                                 new Response.ErrorListener() {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
-                                        if (address != null)
-                                            address.cancel();
-                                        address = Toast.makeText(getBaseContext(), "Le serveur ne répond pas", Toast.LENGTH_SHORT);
-                                        address.show();
+                                        if (toast != null)
+                                            toast.cancel();
+                                        toast = Toast.makeText(getBaseContext(), error.getLocalizedMessage(), Toast.LENGTH_SHORT);
+                                        toast.show();
                                     }
                                 });
 
@@ -144,30 +130,25 @@ public class JoystickActivity extends Activity {
 
                     @Override
                     public void onValueChanged(int angle, int power, int direction) {
-                        String url;
+
+                        String request = "http://" + ipAddress + "/";
 
                         if (angle > 0) {
-                            url = ip + "direction/Droite";
+                            request += "direction/Droite";
                         } else if (angle < 0) {
-                            url = ip + "direction/Gauche";
+                            request += "direction/Gauche";
                         } else {
-                            url = ip + "direction/Aucune";
+                            request += "direction/Aucune";
                         }
 
-                        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-
-                                new Response.Listener<String>() {
-                                    @Override
-                                    public void onResponse(String response) {
-                                    }
-                                },
+                        StringRequest stringRequest = new StringRequest(Request.Method.GET, request, null,
                                 new Response.ErrorListener() {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
-                                        if (address != null)
-                                            address.cancel();
-                                        address = Toast.makeText(getBaseContext(), "Le serveur ne répond pas", Toast.LENGTH_SHORT);
-                                        address.show();
+                                        if (toast != null)
+                                            toast.cancel();
+                                        toast = Toast.makeText(getBaseContext(), "Le serveur ne répond pas", Toast.LENGTH_SHORT);
+                                        toast.show();
                                     }
                                 });
 
@@ -178,6 +159,53 @@ public class JoystickActivity extends Activity {
         }
 
 
+    }
 
+    private void webviewInit() {
+
+        Point size = new Point();
+        this.getWindowManager().getDefaultDisplay().getSize(size);
+        int width = size.x;
+        int height = size.y;
+
+        webView.setVerticalScrollBarEnabled(false);
+        webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
+        String htmlWebcam = "<body style='margin:0;padding:0;'><img src=\"http:" + ipAddress + ":8081/?action=stream\"  height='" + height + "' width='" + width + "'></body></html>";
+        webView.loadData(htmlWebcam, "text/html", null);
+    }
+
+    private void getBatteryVoltage() {
+
+        if (debugMode) {
+            String request = "http://" + ipAddress + "/";
+            request += "batteryVoltage";
+
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, request,
+
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            txtBattery.setText(response);
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            if (toast != null)
+                                toast.cancel();
+                            toast = Toast.makeText(getBaseContext(), "Impossible de lire le voltage", Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+                    });
+
+            queue.add(stringRequest);
+        }
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        timer.cancel();
     }
 }

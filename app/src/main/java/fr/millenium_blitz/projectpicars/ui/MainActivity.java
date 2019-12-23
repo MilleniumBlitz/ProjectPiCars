@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
     public void connect() {
 
         final String connectionAddress = spinner.getSelectedItem().toString();
-        String url = "http://" + connectionAddress + "/alive";
+        String url = "http://" + connectionAddress;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
 
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Snackbar.make(parentLayout, "Serveur indisponible, connexion impossible", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(parentLayout, error.getLocalizedMessage(), Snackbar.LENGTH_SHORT).show();
 
                     }
                 });
