@@ -1,22 +1,18 @@
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"/>
 
-    </android.support.design.widget.AppBarLayout>
-
-
+    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -35,29 +31,27 @@
             android:padding="10dp"
             android:layout_marginBottom="10dp">
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/input_layout_add_connection"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_toStartOf="@+id/btnAdd">
+                android:layout_toStartOf="@+id/btnConnect">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextIP"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/edit_text_ip"
-                    android:inputType="number"
-                    android:digits="0123456789."
                     android:layout_marginEnd="5dp" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/btnAdd"
-                android:text="@string/btn_add"
+                android:id="@+id/btnConnect"
+                android:text="Connection"
                 android:layout_alignBottom="@+id/input_layout_add_connection"
                 android:layout_alignParentEnd="true"
                 style="@style/Widget.AppCompat.Button.Colored"
@@ -75,47 +69,6 @@
             android:weightSum="1"
             android:layout_marginBottom="10dp">
 
-            <Spinner
-                android:id="@+id/spinnerConnections"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginEnd="10dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Medium Text"
-                android:id="@+id/lblConnections"
-                android:visibility="gone" />
-
-            <com.beardedhen.androidbootstrap.BootstrapButton
-                android:id="@+id/btnDel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/btn_del_description"
-                app:fontAwesomeIcon="fa_times"
-                app:bootstrapBrand="info"
-                app:bootstrapSize="lg"
-                app:buttonMode="regular"
-                app:showOutline="true"
-                app:roundedCorners="true"
-                android:layout_marginEnd="5dp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/card"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="10dp"
-            android:weightSum="1"
-            android:layout_marginBottom="10dp">
-
-
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -126,14 +79,4 @@
 
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/btnGo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:src="@drawable/ic_flash_on_black_24dp"
-        android:tint="@android:color/white"
-        android:layout_margin="16dp"
-        app:layout_anchorGravity="bottom|right|end" />
-
-</android.support.design.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

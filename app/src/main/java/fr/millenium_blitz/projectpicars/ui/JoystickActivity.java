@@ -11,8 +11,6 @@ import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.beardedhen.androidbootstrap.BootstrapButton;
@@ -60,16 +58,12 @@ public class JoystickActivity extends Activity {
         getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY | SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
         //Toggle debug mode
-        btnDebug.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                debugMode = !debugMode;
-                if (debugMode) {
-                    txtBattery.setVisibility(View.VISIBLE);
-                } else {
-                    txtBattery.setVisibility(View.INVISIBLE);
-                }
+        btnDebug.setOnClickListener(view -> {
+            debugMode = !debugMode;
+            if (debugMode) {
+                txtBattery.setVisibility(View.VISIBLE);
+            } else {
+                txtBattery.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -99,61 +93,47 @@ public class JoystickActivity extends Activity {
 
                 queue = Volley.newRequestQueue(getApplicationContext());
 
-                joystickPowerView.setOnJoystickMoveListener(new JoystickView.OnJoystickMoveListener() {
+                joystickPowerView.setOnJoystickMoveListener((angle, power, direction) -> {
 
-                    @Override
-                    public void onValueChanged(int angle, int power, int direction) {
-
-                        String request = "http://" + ipAddress + "/";
-                        if (direction > 4) {
-                            request += "power/-" + power;
-                        } else {
-                            request += "power/" + power;
-                        }
-
-                        StringRequest stringRequest = new StringRequest(Request.Method.GET, request, null,
-                                new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        if (toast != null)
-                                            toast.cancel();
-                                        toast = Toast.makeText(getBaseContext(), error.getLocalizedMessage(), Toast.LENGTH_SHORT);
-                                        toast.show();
-                                    }
-                                });
-
-                        queue.add(stringRequest);
+                    String request = "http://" + ipAddress + "/";
+                    if (direction > 4) {
+                        request += "power/-" + power;
+                    } else {
+                        request += "power/" + power;
                     }
+
+                    StringRequest stringRequest = new StringRequest(Request.Method.GET, request, null,
+                            error -> {
+                                if (toast != null)
+                                    toast.cancel();
+                                toast = Toast.makeText(getBaseContext(), error.getLocalizedMessage(), Toast.LENGTH_SHORT);
+                                toast.show();
+                            });
+
+                    queue.add(stringRequest);
                 });
 
-                joystickDirectionView.setOnJoystickMoveListener(new JoystickView.OnJoystickMoveListener() {
+                joystickDirectionView.setOnJoystickMoveListener((angle, power, direction) -> {
 
-                    @Override
-                    public void onValueChanged(int angle, int power, int direction) {
+                    String request = "http://" + ipAddress + "/";
 
-                        String request = "http://" + ipAddress + "/";
-
-                        if (angle > 0) {
-                            request += "direction/Droite";
-                        } else if (angle < 0) {
-                            request += "direction/Gauche";
-                        } else {
-                            request += "direction/Aucune";
-                        }
-
-                        StringRequest stringRequest = new StringRequest(Request.Method.GET, request, null,
-                                new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        if (toast != null)
-                                            toast.cancel();
-                                        toast = Toast.makeText(getBaseContext(), "Le serveur ne répond pas", Toast.LENGTH_SHORT);
-                                        toast.show();
-                                    }
-                                });
-
-                        queue.add(stringRequest);
+                    if (angle > 0) {
+                        request += "direction/Droite";
+                    } else if (angle < 0) {
+                        request += "direction/Gauche";
+                    } else {
+                        request += "direction/Aucune";
                     }
+
+                    StringRequest stringRequest = new StringRequest(Request.Method.GET, request, null,
+                            error -> {
+                                if (toast != null)
+                                    toast.cancel();
+                                toast = Toast.makeText(getBaseContext(), "Le serveur ne répond pas", Toast.LENGTH_SHORT);
+                                toast.show();
+                            });
+
+                    queue.add(stringRequest);
                 });
             }
         }
@@ -182,20 +162,12 @@ public class JoystickActivity extends Activity {
 
             StringRequest stringRequest = new StringRequest(Request.Method.GET, request,
 
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            txtBattery.setText(response);
-                        }
-                    },
-                    new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            if (toast != null)
-                                toast.cancel();
-                            toast = Toast.makeText(getBaseContext(), "Impossible de lire le voltage", Toast.LENGTH_SHORT);
-                            toast.show();
-                        }
+                    response -> txtBattery.setText(response),
+                    error -> {
+                        if (toast != null)
+                            toast.cancel();
+                        toast = Toast.makeText(getBaseContext(), "Impossible de lire le voltage", Toast.LENGTH_SHORT);
+                        toast.show();
                     });
 
             queue.add(stringRequest);
@@ -206,6 +178,7 @@ public class JoystickActivity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        timer.cancel();
+        if (timer != null)
+            timer.cancel();
     }
 }
