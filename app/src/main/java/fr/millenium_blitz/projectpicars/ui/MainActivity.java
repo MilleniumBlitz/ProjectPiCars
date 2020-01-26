@@ -9,7 +9,6 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -29,10 +28,6 @@ public class MainActivity extends AppCompatActivity {
     private RequestQueue queue;
 
     @BindView(android.R.id.content) View parentLayout;
-
-    @BindView(R.id.btnConnect) Button btnConnect;
-
-    @BindView(R.id.btnTest) Button btnTest;
 
     @BindView(R.id.editTextIP) EditText txtIpAjout;
 

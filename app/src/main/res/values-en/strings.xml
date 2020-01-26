@@ -3,7 +3,6 @@
     <string name="app_name">ProjectPiCars</string>
     <string name="action_about">About ProjectPiCars</string>
     <string name="edit_text_ip">IP Address</string>
-    <string name="action_save">Save</string>
     <string name="connect">Connect</string>
     <string name="voltage_batterie">Battery voltage</string>
 </resources>

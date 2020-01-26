@@ -10,7 +10,7 @@ import android.view.View;
 
 public class JoystickView extends View implements Runnable {
 
-    public final static long DEFAULT_LOOP_INTERVAL = 100; // 100 ms
+    private final static long DEFAULT_LOOP_INTERVAL = 100; // 100 ms
 
     // Variables
     private OnJoystickMoveListener onJoystickMoveListener; // Listener
@@ -38,8 +38,7 @@ public class JoystickView extends View implements Runnable {
         initJoystickView();
     }
 
-    protected void initJoystickView() {
-
+    private void initJoystickView() {
         button = new Paint(Paint.ANTI_ALIAS_FLAG);
         button.setColor(Color.BLACK);
         button.setStyle(Paint.Style.STROKE);

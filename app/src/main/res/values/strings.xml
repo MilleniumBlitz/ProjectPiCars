@@ -7,7 +7,6 @@
     <!--Activity Main-->
     <string name="action_about">À propos</string>
     <string name="edit_text_ip">Adresse IP</string>
-    <string name="action_save">Sauvegarder</string>
 
     <string name="connect">Connection</string>
     <string name="test_mode" translatable="false">Test mode</string>
