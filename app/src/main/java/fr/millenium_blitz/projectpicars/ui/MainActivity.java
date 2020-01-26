@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -87,8 +88,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 },
                 error ->
-
                     Snackbar.make(parentLayout, "Erreur lors de la connection", Snackbar.LENGTH_SHORT).show()
+
+
         );
 
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));

@@ -106,6 +106,7 @@ public class JoystickView extends View implements Runnable {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        performClick();
         xPosition = (int) event.getX();
         yPosition = (int) event.getY();
         double abs = Math.sqrt((xPosition - centerX) * (xPosition - centerX)
@@ -184,7 +185,7 @@ public class JoystickView extends View implements Runnable {
         if (lastAngle == 0) {
             return 0;
         }
-        int a = 0;
+        int a;
         if (lastAngle <= 0) {
             a = (lastAngle * -1) + 90;
         } else {
@@ -214,12 +215,10 @@ public class JoystickView extends View implements Runnable {
     @Override
     public void run() {
         while (!Thread.interrupted()) {
-            post(new Runnable() {
-                public void run() {
-                    if (onJoystickMoveListener != null)
-                        onJoystickMoveListener.onValueChanged(getAngle(),
-                                getPower(), getDirection());
-                }
+            post(() -> {
+                if (onJoystickMoveListener != null)
+                    onJoystickMoveListener.onValueChanged(getAngle(),
+                            getPower(), getDirection());
             });
             try {
                 Thread.sleep(DEFAULT_LOOP_INTERVAL);
