@@ -6,20 +6,16 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
 import android.webkit.WebView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import fr.millenium_blitz.projectpicars.R;
-import fr.millenium_blitz.projectpicars.view.JoystickView;
+import fr.millenium_blitz.projectpicars.databinding.ActivityJoystickBinding;
 
 import static android.view.View.SYSTEM_UI_FLAG_FULLSCREEN;
 import static android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
@@ -27,18 +23,7 @@ import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 
 public class JoystickActivity extends Activity {
 
-    @BindView(R.id.webView)
-    WebView webView;
-    @BindView(R.id.btnDebug)
-    BootstrapButton btnDebug;
-
-    @BindView(R.id.joystickPuissance)
-    JoystickView joystickPowerView;
-    @BindView(R.id.joystickDirection)
-    JoystickView joystickDirectionView;
-
-    @BindView(R.id.txtBattery)
-    TextView txtBattery;
+    private ActivityJoystickBinding binding;
 
     private RequestQueue queue;
     private String ipAddress;
@@ -54,16 +39,20 @@ public class JoystickActivity extends Activity {
         super.onCreate(savedInstanceState);
         TypefaceProvider.registerDefaultIconSets();
         setContentView(R.layout.activity_joystick);
-        ButterKnife.bind(this);
+
+        binding = ActivityJoystickBinding.inflate(getLayoutInflater());
+        View parentLayout = binding.getRoot();
+        setContentView(parentLayout);
+
         getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY | SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
         //Toggle debug mode
-        btnDebug.setOnClickListener(view -> {
+        binding.btnDebug.setOnClickListener(view -> {
             debugMode = !debugMode;
             if (debugMode) {
-                txtBattery.setVisibility(View.VISIBLE);
+                binding.txtBattery.setVisibility(View.VISIBLE);
             } else {
-                txtBattery.setVisibility(View.INVISIBLE);
+                binding.txtBattery.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -93,7 +82,7 @@ public class JoystickActivity extends Activity {
 
                 queue = Volley.newRequestQueue(getApplicationContext());
 
-                joystickPowerView.setOnJoystickMoveListener((angle, power, direction) -> {
+                binding.joystickPuissance.setOnJoystickMoveListener((angle, power, direction) -> {
 
                     String request = "http://" + ipAddress + "/";
                     if (direction > 4) {
@@ -113,7 +102,7 @@ public class JoystickActivity extends Activity {
                     queue.add(stringRequest);
                 });
 
-                joystickDirectionView.setOnJoystickMoveListener((angle, power, direction) -> {
+                binding.joystickDirection.setOnJoystickMoveListener((angle, power, direction) -> {
 
                     String request = "http://" + ipAddress + "/";
 
@@ -147,7 +136,7 @@ public class JoystickActivity extends Activity {
         this.getWindowManager().getDefaultDisplay().getSize(size);
         int width = size.x;
         int height = size.y;
-
+        WebView webView = binding.webView;
         webView.setVerticalScrollBarEnabled(false);
         webView.setOverScrollMode(View.OVER_SCROLL_NEVER);
         String htmlWebcam = "<body style='margin:0;padding:0;'><img src=\"http:" + ipAddress + ":8081/?action=stream\"  height='" + height + "' width='" + width + "'></body></html>";
@@ -162,7 +151,7 @@ public class JoystickActivity extends Activity {
 
             StringRequest stringRequest = new StringRequest(Request.Method.GET, request,
 
-                    response -> txtBattery.setText(response),
+                    response -> binding.txtBattery.setText(response),
                     error -> {
                         if (toast != null)
                             toast.cancel();

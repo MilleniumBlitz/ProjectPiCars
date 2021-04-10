@@ -18,26 +18,31 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 import fr.millenium_blitz.projectpicars.R;
+import fr.millenium_blitz.projectpicars.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
     private RequestQueue queue;
 
-    @BindView(android.R.id.content) View parentLayout;
-
-    @BindView(R.id.editTextIP) EditText txtIpAjout;
+    private View parentLayout;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+
         super.onCreate(savedInstanceState);
         TypefaceProvider.registerDefaultIconSets();
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
+
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        parentLayout = binding.getRoot();
+        setContentView(parentLayout);
+
+        binding.btnConnect.setOnClickListener(v -> connect());
+        binding.btnTest.setOnClickListener(v -> testMode());
+
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -45,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
         //Récupère la dernière adresse utilisée
         Intent intent = getIntent();
         String lastUsedAddress = intent.getStringExtra("lastUsedAddress");
-        txtIpAjout.setText(lastUsedAddress);
+        EditText txtIP = binding.editTextIP;
+        txtIP.setText(lastUsedAddress);
 
         queue = Volley.newRequestQueue(getApplicationContext());
     }
@@ -56,10 +62,10 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    @OnClick(R.id.btnConnect)
     public void connect() {
 
-        String ipAddress = txtIpAjout.getText().toString();
+        EditText txtIP = binding.editTextIP;
+        String ipAddress = txtIP.getText().toString();
 
         //Si l'adresse rentré est valide, sauvegarde de l'adresse
         SharedPreferences settings = getApplicationContext().getSharedPreferences("mySettings", 0);
@@ -92,7 +98,6 @@ public class MainActivity extends AppCompatActivity {
         queue.add(stringRequest);
     }
 
-    @OnClick(R.id.btnTest)
     public void testMode()
     {
         Intent intent = new Intent(getApplicationContext(), JoystickActivity.class);
