@@ -23,6 +23,8 @@ import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 
 public class JoystickActivity extends Activity {
 
+    private static final String failsafe_request_url = "/failsafe";
+
     private ActivityJoystickBinding binding;
 
     private RequestQueue queue;
@@ -69,7 +71,11 @@ public class JoystickActivity extends Activity {
 
                     @Override
                     public void onTick(long millisUntilFinished) {
+
                         getBatteryVoltage();
+                        sendFailSafeRequest();
+
+
                     }
 
                     @Override
@@ -161,7 +167,21 @@ public class JoystickActivity extends Activity {
 
             queue.add(stringRequest);
         }
+    }
 
+    private void sendFailSafeRequest() {
+
+        // Send the fail safe request
+        String request = "http://" + ipAddress +  failsafe_request_url;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, request, null,
+                error -> {
+                    if (toast != null)
+                        toast.cancel();
+                    toast = Toast.makeText(getBaseContext(), error.getLocalizedMessage(), Toast.LENGTH_SHORT);
+                    toast.show();
+                });
+
+        queue.add(stringRequest);
     }
 
     @Override
