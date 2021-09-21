@@ -15,9 +15,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:visibility="invisible">
-
-    </WebView>
+        android:visibility="invisible" />
 
     <fr.millenium_blitz.projectpicars.view.JoystickView
         android:id="@+id/joystickPuissance"
@@ -116,17 +114,14 @@
         android:id="@+id/btnDebug"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="false"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentEnd="false"
-        android:layout_alignParentBottom="false"
         android:minHeight="48dp"
         app:bootstrapBrand="primary"
         app:bootstrapSize="lg"
         app:bootstrapText="Debug"
         app:buttonMode="regular"
         app:roundedCorners="true"
-        app:showOutline="false" />
+        app:showOutline="false"
+        android:layout_margin="10dp"/>
 
     <TextView
         android:id="@+id/txtBattery"
@@ -139,7 +134,13 @@
         android:textStyle="bold"
         android:visibility="invisible" />
 
-
+    <View android:id="@+id/connection_rect"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        android:background="#00FF00"
+        android:visibility="visible"/>
 
 
 </RelativeLayout>

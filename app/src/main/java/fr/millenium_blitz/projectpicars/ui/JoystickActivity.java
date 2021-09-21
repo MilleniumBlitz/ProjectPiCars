@@ -1,6 +1,7 @@
 package fr.millenium_blitz.projectpicars.ui;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -56,7 +57,32 @@ public class JoystickActivity extends Activity {
 
         getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY | SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION);
 
-        //Toggle debug mode
+        debugSwitchInit();
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            ipAddress = extras.getString("IP");
+
+            if (!"".equals(ipAddress)) {
+
+                queue = Volley.newRequestQueue(getApplicationContext());
+
+                timerInit();
+                initPowerJoystick();
+                initSteeringJoystick();
+
+                if (binding.webView.getVisibility() == View.VISIBLE)
+                    webviewInit();
+
+            }
+        }
+    }
+
+    /**
+     * Initialization of the debug button
+     */
+    private void debugSwitchInit() {
+
         binding.btnDebug.setOnClickListener(view -> {
             debugMode = !debugMode;
 
@@ -71,58 +97,59 @@ public class JoystickActivity extends Activity {
             binding.txtDirectionJoyPowerDebug.setVisibility(visibility);
             binding.txtDirectionJoyDirectionDebug.setVisibility(visibility);
         });
+    }
 
-        //Get select ipAddress toast
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            ipAddress = extras.getString("IP");
 
-            if (!"".equals(ipAddress)) {
+    /**
+     * Initialization of the power joystick (left side)
+     */
+    private void initPowerJoystick() {
 
-                webviewInit();
-                timerInit();
+        // When the left joystick is used (Power of the car)
+        binding.joystickPuissance.setOnJoystickMoveListener((angle, power, direction) -> {
 
-                queue = Volley.newRequestQueue(getApplicationContext());
-
-                binding.joystickPuissance.setOnJoystickMoveListener((angle, power, direction) -> {
-
-                    String request;
-                    if (direction > 4) {
-                        request = power_request_url + "/-" + power;
-                    } else {
-                        request = power_request_url + "/" + power;
-                    }
-
-                    sendRequest(request);
-
-                    // DEBUG INFO
-                    binding.txtPowerJoyAngleDebug.setText(String.valueOf(angle));
-                    binding.txtPowerJoyPowerDebug.setText(String.valueOf(power));
-                    binding.txtPowerJoyDirectionDebug.setText(String.valueOf(direction));
-
-                });
-
-                binding.joystickDirection.setOnJoystickMoveListener((int angle, int power, int direction) -> {
-
-                    String request;
-
-                    if (angle > 0) {
-                        request = direction_droite_request_url;
-                    } else if (angle < 0) {
-                        request = direction_gauche_request_url;
-                    } else {
-                        request = direction_aucune_request_url;
-                    }
-
-                    sendRequest(request);
-
-                    // DEBUG INFO
-                    binding.txtDirectionJoyAngleDebug.setText(String.valueOf(angle));
-                    binding.txtDirectionJoyPowerDebug.setText(String.valueOf(power));
-                    binding.txtDirectionJoyDirectionDebug.setText(String.valueOf(direction));
-                });
+            String request;
+            if (direction > 4) {
+                request = power_request_url + "/-" + power;
+            } else {
+                request = power_request_url + "/" + power;
             }
-        }
+
+            sendRequest(request);
+
+            // DEBUG INFO
+            binding.txtPowerJoyAngleDebug.setText(String.valueOf(angle));
+            binding.txtPowerJoyPowerDebug.setText(String.valueOf(power));
+            binding.txtPowerJoyDirectionDebug.setText(String.valueOf(direction));
+
+        });
+    }
+
+    /**
+     * Initialization of the steering joystick (right side)
+     */
+    private void initSteeringJoystick() {
+
+        // When the right joystick is used (Direction of the car)
+        binding.joystickDirection.setOnJoystickMoveListener((int angle, int power, int direction) -> {
+
+            String request;
+
+            if (angle > 0) {
+                request = direction_droite_request_url;
+            } else if (angle < 0) {
+                request = direction_gauche_request_url;
+            } else {
+                request = direction_aucune_request_url;
+            }
+
+            sendRequest(request);
+
+            // DEBUG INFO
+            binding.txtDirectionJoyAngleDebug.setText(String.valueOf(angle));
+            binding.txtDirectionJoyPowerDebug.setText(String.valueOf(power));
+            binding.txtDirectionJoyDirectionDebug.setText(String.valueOf(direction));
+        });
     }
 
     /**
@@ -147,7 +174,8 @@ public class JoystickActivity extends Activity {
 
     /**
      * Send a request to the car
-     * @param request The Request to send
+     * @param request The request to send to the car
+     * @return The response of the request
      */
     private String sendRequest(String request) {
 
@@ -156,12 +184,24 @@ public class JoystickActivity extends Activity {
         String final_request = "http://" + ipAddress + "/" + request;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, final_request,
-                response -> { request_response.set(response); },
+                response -> {
+
+                    // If there is a response
+                    request_response.set(response);
+                    binding.connectionRect.setBackgroundColor(Color.rgb(0,255,0));},
+
                 error -> {
-                    if (toast != null)
-                        toast.cancel();
-                    toast = Toast.makeText(getBaseContext(), error.getLocalizedMessage(), Toast.LENGTH_SHORT);
-                    toast.show();
+
+                    // Error of the request
+                    binding.connectionRect.setBackgroundColor(Color.rgb(255,0,0));
+
+                    if (debugMode) {
+                        if (toast != null)
+                            toast.cancel();
+                        toast = Toast.makeText(getBaseContext(), error.getLocalizedMessage(), Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+
                 });
 
         queue.add(stringRequest);
