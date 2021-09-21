@@ -48,6 +48,7 @@
         android:layout_alignParentTop="false"
         android:layout_alignParentEnd="false"
         android:layout_alignParentBottom="false"
+        android:minHeight="48dp"
         app:bootstrapBrand="primary"
         app:bootstrapSize="lg"
         app:bootstrapText="Debug"

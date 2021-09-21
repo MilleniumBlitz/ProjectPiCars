@@ -27,5 +27,6 @@ public class SplashActivity extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         intent.putExtra(lastUsedAddressSetting, lastUsedAddress);
         startActivity(intent);
+        finish();
     }
 }

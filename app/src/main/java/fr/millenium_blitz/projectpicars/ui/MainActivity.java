@@ -28,6 +28,12 @@ public class MainActivity extends AppCompatActivity {
     private View parentLayout;
     private ActivityMainBinding binding;
 
+    private static final String err_not_picars_server = "Serveur non reconnu, connexion impossible";
+    private static final String err_server_conn = "Erreur lors de la connection";
+
+    private static final String setting_key = "mySettings";
+    private static final String lastUsedAddress_key  = "lastUsedAddress";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -49,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Récupère la dernière adresse utilisée
         Intent intent = getIntent();
-        String lastUsedAddress = intent.getStringExtra("lastUsedAddress");
+        String lastUsedAddress = intent.getStringExtra(lastUsedAddress_key);
         EditText txtIP = binding.editTextIP;
         txtIP.setText(lastUsedAddress);
 
@@ -68,13 +74,10 @@ public class MainActivity extends AppCompatActivity {
         String ipAddress = txtIP.getText().toString();
 
         //Si l'adresse rentré est valide, sauvegarde de l'adresse
-        SharedPreferences settings = getApplicationContext().getSharedPreferences("mySettings", 0);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString("lastUsedAddress", ipAddress);
-        editor.apply();
+        saveIPAddress(ipAddress);
 
         final String connectionAddress = ipAddress;
-        String url = "http://" + connectionAddress;
+        String url = "http://" + ipAddress;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
 
@@ -85,17 +88,26 @@ public class MainActivity extends AppCompatActivity {
                         startActivity(intent);
 
                     } else {
-                        Snackbar.make(parentLayout, "Serveur indisponible, connexion impossible", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(parentLayout, err_not_picars_server, Snackbar.LENGTH_SHORT).show();
                     }
                 },
                 error ->
-                    Snackbar.make(parentLayout, "Erreur lors de la connection", Snackbar.LENGTH_SHORT).show()
-
-
+                    Snackbar.make(parentLayout, err_server_conn, Snackbar.LENGTH_SHORT).show()
         );
 
         stringRequest.setRetryPolicy(new DefaultRetryPolicy(0, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(stringRequest);
+    }
+
+    /**
+     * Save the last IP address
+     * @param ipAddress the IP address to save
+     */
+    private void saveIPAddress(String ipAddress) {
+        SharedPreferences settings = getApplicationContext().getSharedPreferences(setting_key, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putString(lastUsedAddress_key, ipAddress);
+        editor.apply();
     }
 
     public void testMode()

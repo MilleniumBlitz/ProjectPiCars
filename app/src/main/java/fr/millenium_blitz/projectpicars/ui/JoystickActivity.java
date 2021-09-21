@@ -14,6 +14,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import fr.millenium_blitz.projectpicars.R;
 import fr.millenium_blitz.projectpicars.databinding.ActivityJoystickBinding;
 
@@ -23,7 +25,12 @@ import static android.view.View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
 
 public class JoystickActivity extends Activity {
 
-    private static final String failsafe_request_url = "/failsafe";
+    private static final String failsafe_request_url = "failsafe";
+    private static final String batteryVoltage_request_url = "batteryVoltage";
+    private static final String power_request_url = "power";
+    private static final String direction_droite_request_url = "direction/Droite";
+    private static final String direction_gauche_request_url = "direction/Gauche";
+    private static final String direction_aucune_request_url = "direction/Aucune";
 
     private ActivityJoystickBinding binding;
 
@@ -33,6 +40,7 @@ public class JoystickActivity extends Activity {
 
     private boolean debugMode = false;
     private CountDownTimer timer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,76 +74,87 @@ public class JoystickActivity extends Activity {
             if (!"".equals(ipAddress)) {
 
                 webviewInit();
-
-                timer = new CountDownTimer(360000, 2000) {
-
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-
-                        getBatteryVoltage();
-                        sendFailSafeRequest();
-
-
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        timer.start();
-
-                    }
-                }.start();
-
+                timerInit();
 
                 queue = Volley.newRequestQueue(getApplicationContext());
 
                 binding.joystickPuissance.setOnJoystickMoveListener((angle, power, direction) -> {
 
-                    String request = "http://" + ipAddress + "/";
+                    String request;
                     if (direction > 4) {
-                        request += "power/-" + power;
+                        request = power_request_url + "/-" + power;
                     } else {
-                        request += "power/" + power;
+                        request = power_request_url + "/" + power;
                     }
 
-                    StringRequest stringRequest = new StringRequest(Request.Method.GET, request, null,
-                            error -> {
-                                if (toast != null)
-                                    toast.cancel();
-                                toast = Toast.makeText(getBaseContext(), error.getLocalizedMessage(), Toast.LENGTH_SHORT);
-                                toast.show();
-                            });
+                    sendRequest(request);
 
-                    queue.add(stringRequest);
                 });
 
                 binding.joystickDirection.setOnJoystickMoveListener((angle, power, direction) -> {
 
-                    String request = "http://" + ipAddress + "/";
+                    String request;
 
                     if (angle > 0) {
-                        request += "direction/Droite";
+                        request = direction_droite_request_url;
                     } else if (angle < 0) {
-                        request += "direction/Gauche";
+                        request = direction_gauche_request_url;
                     } else {
-                        request += "direction/Aucune";
+                        request = direction_aucune_request_url;
                     }
 
-                    StringRequest stringRequest = new StringRequest(Request.Method.GET, request, null,
-                            error -> {
-                                if (toast != null)
-                                    toast.cancel();
-                                toast = Toast.makeText(getBaseContext(), "Le serveur ne répond pas", Toast.LENGTH_SHORT);
-                                toast.show();
-                            });
-
-                    queue.add(stringRequest);
+                    sendRequest(request);
                 });
             }
         }
-
-
     }
 
+    /**
+     * Initialize the timer
+     * The Timer run every 2 sec
+     */
+    private void timerInit() {
+        timer = new CountDownTimer(360000, 2000) {
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+                getBatteryVoltage();
+                sendFailSafeRequest();
+            }
+
+            @Override
+            public void onFinish() {
+                timer.start();
+            }
+        }.start();
+    }
+
+    /**
+     * Send a request to the car
+     * @param request The Request to send
+     */
+    private String sendRequest(String request) {
+
+        AtomicReference<String> request_response = new AtomicReference<>();
+
+        String final_request = "http://" + ipAddress + "/" + request;
+
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, final_request,
+                response -> { request_response.set(response); },
+                error -> {
+                    if (toast != null)
+                        toast.cancel();
+                    toast = Toast.makeText(getBaseContext(), error.getLocalizedMessage(), Toast.LENGTH_SHORT);
+                    toast.show();
+                });
+
+        queue.add(stringRequest);
+        return request_response.get();
+    }
+
+    /**
+     * Initialize the web view to display the camera feedback
+     */
     private void webviewInit() {
 
         Point size = new Point();
@@ -149,39 +168,26 @@ public class JoystickActivity extends Activity {
         webView.loadData(htmlWebcam, "text/html", null);
     }
 
+    /**
+     * Get the battery voltage and display it on the screen
+     */
     private void getBatteryVoltage() {
 
         if (debugMode) {
-            String request = "http://" + ipAddress + "/";
-            request += "batteryVoltage";
-
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, request,
-
-                    response -> binding.txtBattery.setText(response),
-                    error -> {
-                        if (toast != null)
-                            toast.cancel();
-                        toast = Toast.makeText(getBaseContext(), "Impossible de lire le voltage", Toast.LENGTH_SHORT);
-                        toast.show();
-                    });
-
-            queue.add(stringRequest);
+            String batteryVoltage = sendRequest(batteryVoltage_request_url);
+            if (batteryVoltage != null) {
+                binding.txtBattery.setText(batteryVoltage);
+            }
         }
     }
 
+    /**
+     * Send the fail safe request
+     */
     private void sendFailSafeRequest() {
 
         // Send the fail safe request
-        String request = "http://" + ipAddress +  failsafe_request_url;
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, request, null,
-                error -> {
-                    if (toast != null)
-                        toast.cancel();
-                    toast = Toast.makeText(getBaseContext(), error.getLocalizedMessage(), Toast.LENGTH_SHORT);
-                    toast.show();
-                });
-
-        queue.add(stringRequest);
+        sendRequest(failsafe_request_url);
     }
 
     @Override
