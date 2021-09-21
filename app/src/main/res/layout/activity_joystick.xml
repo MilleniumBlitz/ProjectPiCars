@@ -28,7 +28,43 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:background="@drawable/joystick_power"
-        android:clickable="false" />
+        android:clickable="false"/>
+
+    <TextView
+        android:id="@+id/txtPowerJoyAngleDebug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@id/joystickPuissance"
+        android:layout_alignBottom="@id/joystickPuissance"
+        android:text="ANGLE"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/txtPowerJoyPowerDebug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/txtPowerJoyAngleDebug"
+        android:layout_toEndOf="@id/joystickPuissance"
+        android:text="POWER"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/txtPowerJoyDirectionDebug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/txtPowerJoyPowerDebug"
+        android:layout_toEndOf="@id/joystickPuissance"
+        android:text="DIR"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="invisible"/>
 
     <fr.millenium_blitz.projectpicars.view.JoystickView
         android:id="@+id/joystickDirection"
@@ -39,6 +75,42 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:background="@drawable/joystick_direction" />
+
+    <TextView
+        android:id="@+id/txtDirectionJoyAngleDebug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/joystickDirection"
+        android:layout_alignBottom="@id/joystickPuissance"
+        android:text="ANGLE"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/txtDirectionJoyPowerDebug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/txtPowerJoyAngleDebug"
+        android:layout_toStartOf="@id/joystickDirection"
+        android:text="POWER"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="invisible"/>
+
+    <TextView
+        android:id="@+id/txtDirectionJoyDirectionDebug"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/txtPowerJoyPowerDebug"
+        android:layout_toStartOf="@id/joystickDirection"
+        android:text="DIR"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="invisible"/>
 
     <com.beardedhen.androidbootstrap.BootstrapButton
         android:id="@+id/btnDebug"
@@ -66,6 +138,8 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="invisible" />
+
+
 
 
 </RelativeLayout>

@@ -59,11 +59,17 @@ public class JoystickActivity extends Activity {
         //Toggle debug mode
         binding.btnDebug.setOnClickListener(view -> {
             debugMode = !debugMode;
-            if (debugMode) {
-                binding.txtBattery.setVisibility(View.VISIBLE);
-            } else {
-                binding.txtBattery.setVisibility(View.INVISIBLE);
-            }
+
+            // Switch visibility on/off for debug elements
+            int visibility = debugMode ? View.VISIBLE : View.INVISIBLE;
+
+            binding.txtBattery.setVisibility(visibility);
+            binding.txtPowerJoyAngleDebug.setVisibility(visibility);
+            binding.txtPowerJoyPowerDebug.setVisibility(visibility);
+            binding.txtPowerJoyDirectionDebug.setVisibility(visibility);
+            binding.txtDirectionJoyAngleDebug.setVisibility(visibility);
+            binding.txtDirectionJoyPowerDebug.setVisibility(visibility);
+            binding.txtDirectionJoyDirectionDebug.setVisibility(visibility);
         });
 
         //Get select ipAddress toast
@@ -89,9 +95,14 @@ public class JoystickActivity extends Activity {
 
                     sendRequest(request);
 
+                    // DEBUG INFO
+                    binding.txtPowerJoyAngleDebug.setText(String.valueOf(angle));
+                    binding.txtPowerJoyPowerDebug.setText(String.valueOf(power));
+                    binding.txtPowerJoyDirectionDebug.setText(String.valueOf(direction));
+
                 });
 
-                binding.joystickDirection.setOnJoystickMoveListener((angle, power, direction) -> {
+                binding.joystickDirection.setOnJoystickMoveListener((int angle, int power, int direction) -> {
 
                     String request;
 
@@ -104,6 +115,11 @@ public class JoystickActivity extends Activity {
                     }
 
                     sendRequest(request);
+
+                    // DEBUG INFO
+                    binding.txtDirectionJoyAngleDebug.setText(String.valueOf(angle));
+                    binding.txtDirectionJoyPowerDebug.setText(String.valueOf(power));
+                    binding.txtDirectionJoyDirectionDebug.setText(String.valueOf(direction));
                 });
             }
         }
