@@ -6,6 +6,8 @@ import android.graphics.Point;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.webkit.WebView;
 import android.widget.Toast;
 
@@ -55,7 +57,11 @@ public class JoystickActivity extends Activity {
         View parentLayout = binding.getRoot();
         setContentView(parentLayout);
 
-        getWindow().getDecorView().setSystemUiVisibility(SYSTEM_UI_FLAG_IMMERSIVE_STICKY | SYSTEM_UI_FLAG_FULLSCREEN | SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        WindowInsetsController controller = getWindow().getInsetsController();
+        if(controller != null) {
+            controller.hide(WindowInsets.Type.navigationBars());
+            controller.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE);
+        }
 
         debugSwitchInit();
 
@@ -214,7 +220,6 @@ public class JoystickActivity extends Activity {
     private void webviewInit() {
 
         Point size = new Point();
-        this.getWindowManager().getDefaultDisplay().getSize(size);
         int width = size.x;
         int height = size.y;
         WebView webView = binding.webView;
